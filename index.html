@@ -872,7 +872,7 @@ gal.querySelectorAll('.ba').forEach(function(f){f.addEventListener('click',funct
     if(beacon&&navigator.sendBeacon){try{navigator.sendBeacon(U,body);return;}catch(e){}}
     try{fetch(U,{method:'POST',mode:'no-cors',keepalive:true,body:body});}catch(e){}}
   function flush(){ready=true;Q.forEach(function(q){send(q[0].ev,q[0].extra,q[1]);});Q=[];}
-  function start(){if(isNew)send('visita',{nuevo:!ls('gt128seen')});ls('gt128seen','1');}
+  function start(){send('visita',{nuevo:!ls('gt128seen'),recarga:!isNew});ls('gt128seen','1');}
   // modelo del dispositivo (Chrome/Android lo da; iPhone no)
   var hi=navigator.userAgentData&&navigator.userAgentData.getHighEntropyValues?navigator.userAgentData.getHighEntropyValues(['model','platform','platformVersion']).then(function(d){dev.model=d.model||'';if(d.platform)dev.platform=d.platform+(d.platformVersion?' '+d.platformVersion:'');}).catch(function(){}):Promise.resolve();
   Promise.all([hi,fetch('assets/track.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;})]).then(function(r){var cfg=r[1];U=(cfg&&cfg.url)||'';start();flush();});
