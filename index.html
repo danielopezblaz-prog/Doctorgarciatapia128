@@ -678,7 +678,7 @@ function update(){
   placeCam(cc,orbit+drift);
   applyStep(i,t);
   // tarjetas
-  var showCard=p>=SEG.x[1]-0.004&&p<SEG.fin[0]&&t>0.08&&t<0.96;
+  var showCard=p>=SEG.x[1]-0.004&&p<SEG.fin[0]&&t>0.04&&t<0.975;
   cards.forEach(function(cd,k){cd.classList.toggle('show',showCard&&k===i);});
   var inSteps=p>=SEG.steps[0]&&p<SEG.fin[0];
   Array.prototype.forEach.call(stepsEl.children,function(b,k){b.setAttribute('aria-current',k===i&&inSteps?'true':'false');b.classList.toggle('done',k<i||p>=SEG.fin[0]);});
@@ -710,9 +710,15 @@ requestAnimationFrame(update);
 
 /* ================= PRESENTAR ================= */
 var presentBtn=document.getElementById('present'),presenting=false,presRAF=0;
-function startPresent(from){presenting=true;presentBtn.dataset.on='1';presentBtn.textContent='❚❚ Pausar';var last=performance.now();var speed=maxScroll()/150; // 150 s de recorrido
+/* Ritmo de la presentación: cada paso dura lo que se tarda en leer su tarjeta (≈ 280 palabras/min) + un pequeño margen; mínimo 5 s, máximo 18 s */
+var READ_CPS=27;
+function readSecs(i){var st=STEPS[i];return clamp(0.7+(st.title.length+st.text.length)/READ_CPS+0.25*st.chips.length,5,18);}
+var STEP_W=(SEG.steps[1]-SEG.steps[0])/N;
+(function(){var tot=8+150*(SEG.steps[0]-SEG.intro[1])+150*(1-SEG.fin[0])/2.5;for(var i=0;i<N;i++)tot+=readSecs(i);var m=Math.round(tot/30)/2;var sm=document.querySelector('#play small');if(sm)sm.textContent='Vídeo y recorrido 3D guiado · '+String(m).replace('.',',')+' min';})();
+function startPresent(from){presenting=true;presentBtn.dataset.on='1';presentBtn.textContent='❚❚ Pausar';var last=performance.now();var speed=maxScroll()/150; // velocidad base (intro y transiciones)
+  function curSpeed(pp){if(pp>=SEG.fin[0])return speed*2.5;if(pp<SEG.steps[0])return speed;var si=Math.min(N-1,Math.floor((pp-SEG.steps[0])/STEP_W));return STEP_W*maxScroll()/readSecs(si);}
   if(typeof from==='number')window.scrollTo(0,scroller.offsetTop+from*maxScroll());else if(getP()>0.98)window.scrollTo(0,scroller.offsetTop);
-  (function tick(){if(!presenting)return;var now=performance.now();var d=(now-last)/1000;last=now;var y=scrollY+speed*d;if(y>=scroller.offsetTop+maxScroll()){window.scrollTo(0,scroller.offsetTop+maxScroll());stopPresent();return;}window.scrollTo(0,y);presRAF=requestAnimationFrame(tick);})();}
+  (function tick(){if(!presenting)return;var now=performance.now();var d=(now-last)/1000;last=now;var y=scrollY+curSpeed(getP())*d;if(y>=scroller.offsetTop+maxScroll()){window.scrollTo(0,scroller.offsetTop+maxScroll());stopPresent();return;}window.scrollTo(0,y);presRAF=requestAnimationFrame(tick);})();}
 function stopPresent(){presenting=false;presentBtn.dataset.on='';presentBtn.textContent='▶ Presentar';cancelAnimationFrame(presRAF);if(!iv.paused&&!iv.ended){iv.pause();introDone=true;}}
 presentBtn.addEventListener('click',function(){if(presenting){stopPresent();return;}if(getP()<SEG.intro[1]&&!introDone){playIntro();presentBtn.dataset.on='1';presentBtn.textContent='❚❚ Pausar';}else{startPresent();}});
 document.getElementById('play').addEventListener('click',function(){window.scrollTo(0,scroller.offsetTop);playIntro();presentBtn.dataset.on='1';presentBtn.textContent='❚❚ Pausar';});
