@@ -331,7 +331,7 @@ var MAT={
   reveal:new T.MeshStandardMaterial({color:0x4a4d50,roughness:.9}),
   blind:new T.MeshStandardMaterial({color:0xe8e4da,roughness:.8}),
   band:new T.MeshStandardMaterial({color:0xd6d0c4,roughness:.9}),
-  bandNew:new T.MeshStandardMaterial({color:0x2f3338,roughness:.55,metalness:.35}),
+  bandNew:new T.MeshStandardMaterial({color:0x2f3338,roughness:.85,metalness:0}),
   rail:new T.MeshStandardMaterial({color:0x2b2f33,roughness:.5,metalness:.6}),
   car:[new T.MeshStandardMaterial({color:0xd8d9db,roughness:.35,metalness:.5}),new T.MeshStandardMaterial({color:0x2f3338,roughness:.35,metalness:.5}),new T.MeshStandardMaterial({color:0x8a1d1d,roughness:.35,metalness:.5}),new T.MeshStandardMaterial({color:0x3b5a8a,roughness:.35,metalness:.5}),new T.MeshStandardMaterial({color:0x9ea3a7,roughness:.35,metalness:.5})],
   glass:new T.MeshStandardMaterial({color:0x8fb0c9,roughness:.08,metalness:.55,emissive:0x000000,envMapIntensity:1.2}),
@@ -405,8 +405,15 @@ mesh(box,MAT.podium,TW/2+6.5,1.75,1,11,3.5,17,G.base); // locales anexos
 mesh(box,MAT.tile,TW/2+6.5,3.3,1,11.02,0.6,17.02,G.base);
 
 /* torre de ladrillo */
-var tower=new T.Mesh(new T.BoxGeometry(TW,H,TD),[brickMat(TD,H),brickMat(TD,H),MAT.peto,MAT.peto,brickMat(TW,H),brickMat(TW,H)]);
-tower.position.set(0,Y0+H/2,0);tower.castShadow=tower.receiveShadow=!isMobile;G.base.add(tower);
+/* La franja de celosía de cocinas no es pared: detrás hay un patinillo (hueco de PDEP m de fondo, toda la altura) */
+var PDEP=1.7;
+var towerParts=[];[[-(TW+STRIP)/4,(TW-STRIP)/2,TD],[(TW+STRIP)/4,(TW-STRIP)/2,TD],[0,STRIP,TD-2*PDEP]].forEach(function(q){var m=new T.Mesh(new T.BoxGeometry(q[1],H,q[2]),[brickMat(q[2],H),brickMat(q[2],H),MAT.peto,MAT.peto,brickMat(q[1],H),brickMat(q[1],H)]);m.position.set(q[0],Y0+H/2,0);m.castShadow=m.receiveShadow=!isMobile;G.base.add(m);towerParts.push(m);});
+var tower=towerParts[2];
+/* interior del patinillo: ventanas de cocina al fondo, bajantes y suelo */
+(function(){var pvFr=[],pvGl=[],pvRv=[];for(var fl=0;fl<NFL;fl++){var fy=Y0+fl*FL+1.55;[1,-1].forEach(function(sg){var z=sg*(TD/2-PDEP);[-1.0,1.0].forEach(function(x){pvRv.push({p:new T.Vector3(x,fy,z+sg*0.1),s:[0.95,1.05,0.2]});pvFr.push({p:new T.Vector3(x,fy,z+sg*0.19),s:[0.95,1.05,0.06]});pvGl.push({p:new T.Vector3(x,fy,z+sg*0.23),s:[0.8,0.9,0.02]});});});}
+  inst(box,MAT.reveal,pvRv,G.base);inst(box,MAT.frame,pvFr,G.base);inst(box,MAT.glass,pvGl,G.base);
+  [1,-1].forEach(function(sg){mesh(new T.CylinderGeometry(.09,.09,H,8),MAT.reveal,-STRIP/2+0.3,Y0+H/2,sg*(TD/2-PDEP+0.3),1,1,1,G.base);mesh(new T.CylinderGeometry(.06,.06,H,8),MAT.reveal,STRIP/2-0.3,Y0+H/2,sg*(TD/2-PDEP+0.25),1,1,1,G.base);
+    mesh(box,MAT.peto,0,Y0+0.1,sg*(TD/2-PDEP/2),STRIP,0.2,PDEP,G.base);});})();
 var atico=new T.Mesh(new T.BoxGeometry(AW,AH,AD),[brickMat(AD,AH),brickMat(AD,AH),MAT.peto,MAT.peto,brickMat(AW,AH),brickMat(AW,AH)]);
 atico.position.set(0,TOP+AH/2,0);atico.castShadow=atico.receiveShadow=!isMobile;G.base.add(atico);
 mesh(box,MAT.peto,0,TOP+AH+1.1,0,3.0,2.2,2.6,G.base); // torreón (casetón)
@@ -449,15 +456,15 @@ for(var fl=0;fl<NFL;fl++){var fy=Y0+fl*FL;['px','nx'].forEach(function(f){
   var t1=facePos(f,-TSTRIP/2-0.08,fy+1.4,0.28);testa.push({p:t1.p,ry:t1.ry,s:[0.1,2.8,0.28]});var t2=facePos(f,TSTRIP/2+0.08,fy+1.4,0.28);testa.push({p:t2.p,ry:t2.ry,s:[0.1,2.8,0.28]});
 });}
 inst(box,MAT.peto,petoItems,G.base);inst(box,MAT.glass,tglass,G.base);inst(box,MAT.frame,mull,G.base);
-var bands=[],rails=[];for(var fl=1;fl<=NFL;fl++){var fy=Y0+fl*FL;['pz','nz'].forEach(function(f){var a=facePos(f,0,fy-0.12,0.02);bands.push({p:a.p,ry:a.ry,s:[TW+0.08,0.28,0.04]});});['px','nx'].forEach(function(f){var a=facePos(f,0,fy-0.12,0.02);bands.push({p:a.p,ry:a.ry,s:[TD+0.08,0.28,0.04]});});}
+var bands=[],rails=[];for(var fl=1;fl<=NFL;fl++){var fy=Y0+fl*FL;['pz','nz'].forEach(function(f){[-1,1].forEach(function(v){var a=facePos(f,v*(STRIP/2+TW/2+0.04)/2,fy-0.12,0.02);bands.push({p:a.p,ry:a.ry,s:[TW/2+0.04-STRIP/2,0.28,0.04]});});});['px','nx'].forEach(function(f){var a=facePos(f,0,fy-0.12,0.02);bands.push({p:a.p,ry:a.ry,s:[TD+0.08,0.28,0.04]});});}
 for(var fl=0;fl<NFL;fl++){var fy=Y0+fl*FL;['px','nx'].forEach(function(f){var a=facePos(f,0,fy+1.06,0.27);rails.push({p:a.p,ry:a.ry,s:[TSTRIP,0.05,0.05]});for(var k=0;k<=6;k++){var b=facePos(f,-TSTRIP/2+k*TSTRIP/6,fy+0.78,0.27);rails.push({p:b.p,ry:b.ry,s:[0.04,0.56,0.04]});}});}
 inst(box,MAT.band,bands,G.base);inst(box,MAT.rail,rails,G.base);
-/* frentes de forjado en gris antracita (como en el render): aparecen con los remates */
-var bandsNew=[];for(var fl=1;fl<=NFL;fl++){var fy=Y0+fl*FL;['pz','nz'].forEach(function(f){var a=facePos(f,0,fy-0.14,0.17);bandsNew.push({p:a.p,ry:a.ry,s:[TW+0.36,0.34,0.06]});});['px','nx'].forEach(function(f){var a=facePos(f,0,fy-0.14,0.17);bandsNew.push({p:a.p,ry:a.ry,s:[TD+0.36,0.34,0.06]});});}
+/* frentes de forjado en gris antracita (como en el render): son SATE en color oscuro y suben con el acabado */
+var bandsNew=[];for(var fl=1;fl<=NFL;fl++){var fy=Y0+fl*FL;['pz','nz'].forEach(function(f){[-1,1].forEach(function(v){var a=facePos(f,v*(STRIP/2+TW/2+0.18)/2,fy-0.14,0.17);bandsNew.push({p:a.p,ry:a.ry,s:[TW/2+0.18-STRIP/2,0.34,0.06]});});});['px','nx'].forEach(function(f){var a=facePos(f,0,fy-0.14,0.17);bandsNew.push({p:a.p,ry:a.ry,s:[TD+0.36,0.34,0.06]});});}
 [TOP].forEach(function(y){['pz','nz'].forEach(function(f){var a=facePos(f,0,y-0.2,0.17);bandsNew.push({p:a.p,ry:a.ry,s:[TW+0.36,0.4,0.06]});});['px','nx'].forEach(function(f){var a=facePos(f,0,y-0.2,0.17);bandsNew.push({p:a.p,ry:a.ry,s:[TD+0.36,0.4,0.06]});});});
 ['pz','nz'].forEach(function(f){[-1,1].forEach(function(v){var a=facePos(f,v*(STRIP/2+0.25),Y0+H/2,0.17);bandsNew.push({p:a.p,ry:a.ry,s:[0.3,H,0.06]});});});
 ['px','nx'].forEach(function(f){[-1,1].forEach(function(v){var a=facePos(f,v*(TSTRIP/2+0.22),Y0+H/2,0.17);bandsNew.push({p:a.p,ry:a.ry,s:[0.28,H,0.06]});});});
-MAT.bandNew.clippingPlanes=[PL.rem];inst(box,MAT.bandNew,bandsNew,G.rem);
+MAT.bandNew.clippingPlanes=[PL.sate];inst(box,MAT.bandNew,bandsNew,G.sate); // frentes de forjado: SATE en color oscuro, suben con el acabado
 inst(box,MAT.sate,petoSate,G.sate);inst(box,MAT.alu,testa,G.rem);
 /* celosía antigua (±z) */
 ['pz','nz'].forEach(function(f){var a=facePos(f,0,Y0+H/2,0.08);var m=mesh(box,MAT.slat,a.p.x,a.p.y,a.p.z,STRIP,H,0.16,G.old);m.rotation.y=a.ry;m.material=MAT.slat.clone();m.material.map=MAT.slat.map.clone();m.material.map.needsUpdate=true;m.material.map.repeat.set(STRIP/1.2,H/1.2);});
@@ -482,7 +489,7 @@ inst(box,MAT.scaf,posts,G.scaf);inst(box,MAT.scaf,ledg,G.scaf);inst(box,MAT.plan
 var net=mesh(box,MAT.net,0,SH/2,0,SW+0.4,SH,SD+0.4,G.scaf);net.castShadow=false;
 /* SATE: pieles (EPS gris primero, acabado blanco detrás) */
 var side=(TD-TSTRIP)/2;
-function skinSet(mat,skin,group){mesh(box,mat,0,Y0+H/2,TD/2+skin/2,TW+2*skin,H,skin,group);mesh(box,mat,0,Y0+H/2,-TD/2-skin/2,TW+2*skin,H,skin,group);
+function skinSet(mat,skin,group){var sw=TW/2+skin-STRIP/2,sc=(STRIP/2+TW/2+skin)/2;[1,-1].forEach(function(sg){[1,-1].forEach(function(sx){mesh(box,mat,sx*sc,Y0+H/2,sg*(TD/2+skin/2),sw,H,skin,group);mesh(box,mat,sx*(STRIP/2-skin/2),Y0+H/2,sg*(TD/2-PDEP/2+skin/2),skin,H,PDEP+skin,group);});mesh(box,mat,0,Y0+H/2,sg*(TD/2-PDEP+skin/2),STRIP-0.02,H,skin,group);});
   [[1,1],[1,-1],[-1,1],[-1,-1]].forEach(function(v){mesh(box,mat,v[0]*(TW/2+skin/2),Y0+H/2,v[1]*(TSTRIP/2+side/2),skin,H,side,group);});
   var a=new T.Mesh(new T.BoxGeometry(AW+2*skin,AH,AD+2*skin),mat);a.position.set(0,TOP+AH/2,0);a.castShadow=!isMobile;group.add(a);}
 skinSet(MAT.eps,0.10,G.eps);skinSet(MAT.sate,0.16,G.sate);var skin=0.16;
