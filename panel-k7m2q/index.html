@@ -100,6 +100,8 @@ footer{margin-top:18px;font-size:12px;color:var(--muted)}
 var LS={get:function(k){try{return localStorage.getItem(k)||'';}catch(e){return '';}},set:function(k,v){try{localStorage.setItem(k,v);}catch(e){}}};
 var SHEET_DEFAULT='https://docs.google.com/spreadsheets/d/1tf3Pxo_c8rfrLXIuv42AysZ5OAKIY1vwH9XQXFzDoG4/edit';
 var cfg={url:LS.get('gt128panel_url')||'https://script.google.com/macros/s/AKfycby596dEapCmYcAhAJLLTRK-hNpb1OIGwd3JF0VXMVIC79iozTYBbGF6oJaFfZNjr2Wz/exec',key:LS.get('gt128panel_key'),sheet:LS.get('gt128panel_sheet')||SHEET_DEFAULT};
+/* la clave puede venir en el propio enlace guardado (#k=…): se guarda en el dispositivo y se quita de la barra */
+try{var hk=new URLSearchParams((location.hash||'').replace(/^#/,'')).get('k');if(hk){cfg.key=hk;LS.set('gt128panel_key',hk);history.replaceState(null,'',location.pathname+location.search);}}catch(e){}
 var MCP=null,MCPready=(window.claude&&window.claude.use)?window.claude.use('mcp').then(function(m){MCP=m||null;return MCP;}).catch(function(){MCP=null;return null;}):Promise.resolve(null);
 function sheetId(u){var m=String(u||'').match(/\/d\/([a-zA-Z0-9_-]{20,})/);return m?m[1]:(/^[a-zA-Z0-9_-]{20,}$/.test(String(u||'').trim())?String(u).trim():'');}
 /* filas de la hoja (cabecera + datos) → objetos con los mismos nombres que usa el panel */
