@@ -174,6 +174,24 @@ h1,h2,h3{font-family:var(--display);margin:0;line-height:1;text-wrap:balance}
 .bids-h{display:grid;gap:3px;margin-bottom:10px}.bids-h b{font-family:var(--display);font-size:21px;font-weight:700;letter-spacing:.3px;line-height:1.05}.bids-h span{font-size:12.5px;color:var(--muted)}
 .bids-l{display:grid;gap:8px}.bids-l .dl{margin-top:0;display:flex;width:100%;box-sizing:border-box}
 .bids-l .dl-tx b{font-size:17px}.bids-l .dl-ic{width:36px;height:46px}.bids-l .dl-bt{padding:7px 10px;font-size:12.5px}
+.bids-h{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.bids-h>div{display:grid;gap:3px}
+.bids-add{flex:none;display:inline-flex;align-items:center;gap:6px;background:transparent;color:#fff;border:1px solid var(--line);border-radius:6px;padding:7px 11px;font-family:var(--display);font-size:13px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;cursor:pointer;margin-top:2px}
+.bids-add:hover{border-color:rgba(255,255,255,.45);background:rgba(255,255,255,.06)}.bids-add:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.bids-l .dl.pending{opacity:.75}.bids-l .dl.pending .dl-bt{background:#444a52}
+.modal{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:16px;font-family:var(--body)}.modal[hidden]{display:none}
+.modal-bg{position:absolute;inset:0;background:rgba(5,8,10,.7);backdrop-filter:blur(3px)}
+.modal-c{position:relative;width:min(520px,100%);max-height:calc(100dvh - 32px);overflow:auto;background:#161b20;border:1px solid var(--line);border-radius:12px;padding:18px 18px 16px;display:grid;gap:12px;color:var(--fg);box-shadow:0 24px 60px rgba(0,0,0,.5)}
+.modal-h{display:flex;align-items:center;justify-content:space-between;gap:10px}.modal-h b{font-family:var(--display);font-size:22px;font-weight:700;line-height:1.05}
+.modal-x{background:transparent;border:0;color:#fff;font-size:26px;line-height:1;cursor:pointer;padding:2px 6px;opacity:.8}.modal-x:hover{opacity:1}
+.f{display:grid;gap:5px;font-size:12.5px;color:var(--muted)}.f input[type=text],.f input[type=date],.f input[type=password]{width:100%;box-sizing:border-box;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:6px;color:#fff;padding:10px 11px;font:14px var(--body);color-scheme:dark}
+.f input:focus{outline:2px solid var(--accent2);outline-offset:1px;border-color:transparent}
+.f2{display:grid;grid-template-columns:1fr 1.4fr;gap:10px}@media (max-width:480px){.f2{grid-template-columns:1fr}}
+.f.file{position:relative}.f.file input{position:absolute;inset:0;opacity:0;cursor:pointer}.f.file em{display:block;font-style:normal;background:rgba(255,255,255,.06);border:1px dashed rgba(255,255,255,.35);border-radius:6px;padding:10px 11px;color:#fff;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.f.key summary{cursor:pointer;color:var(--muted)}.f.key input{margin-top:8px}.f.key small{display:block;margin-top:6px;color:var(--muted)}.f.key a{color:#fff}
+.modal-msg{margin:0;min-height:1.2em;font-size:13px;color:var(--warm)}.modal-msg.err{color:#ff8a7a}.modal-msg.ok{color:var(--ok)}
+.modal-a{display:flex;justify-content:flex-end;gap:8px}
+.btn-sec,.btn-pri{font-family:var(--display);font-size:14px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;border-radius:6px;padding:10px 16px;cursor:pointer}
+.btn-sec{background:transparent;border:1px solid var(--line);color:#fff}.btn-pri{background:var(--accent);border:0;color:#fff}.btn-pri[disabled]{opacity:.6;cursor:wait}
 .bids-empty{margin:4px 0 0;font-size:13px;color:var(--muted);padding:12px 14px;border:1px dashed var(--line);border-radius:8px}
 .bids[data-n]:not([data-n="0"]) .bids-empty{display:none}
 @media (max-width:520px){.dl{gap:10px;padding:10px 10px 10px 10px}.dl-ic{width:36px;height:46px}.dl-tx b{font-size:17px}.dl-bt{padding:7px 9px;font-size:12px}}
@@ -225,7 +243,7 @@ h1,h2,h3{font-family:var(--display);margin:0;line-height:1;text-wrap:balance}
             <span class="dl-bt">Descargar <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M8 2v8M4.5 6.5 8 10l3.5-3.5M3 13h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
           </a>
           <section class="bids" id="bids" aria-labelledby="bidsT">
-            <div class="bids-h"><b id="bidsT">Presupuestos de diferentes contratas</b><span>Ofertas recibidas para la comparativa de la comunidad</span></div>
+            <div class="bids-h"><div><b id="bidsT">Presupuestos de diferentes contratas</b><span>Ofertas recibidas para la comparativa de la comunidad</span></div><button type="button" class="bids-add" id="bidAdd"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M8 13V4M4.5 7.5 8 4l3.5 3.5M3 14h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Subir PDF</button></div>
             <div class="bids-l" id="bidList"></div>
             <p class="bids-empty" id="bidEmpty">Se irán incorporando aquí los presupuestos de las empresas conforme se reciban.</p>
           </section>
@@ -242,6 +260,18 @@ h1,h2,h3{font-family:var(--display);margin:0;line-height:1;text-wrap:balance}
   </div>
 </div>
 
+<div id="bidModal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="bidMT">
+  <div class="modal-bg" data-close></div>
+  <form class="modal-c" id="bidForm" novalidate>
+    <div class="modal-h"><b id="bidMT">Subir presupuesto de una contrata</b><button type="button" class="modal-x" data-close aria-label="Cerrar">×</button></div>
+    <label class="f"><span>Empresa / contrata</span><input id="bfEmp" type="text" required maxlength="80" placeholder="Nombre de la empresa" autocomplete="organization"></label>
+    <label class="f"><span>Documento</span><input id="bfDoc" type="text" maxlength="120" value="Presupuesto fachada + cubierta + instalaciones"></label>
+    <div class="f2"><label class="f"><span>Fecha</span><input id="bfFec" type="date"></label><label class="f file"><span>Archivo PDF</span><input id="bfPdf" type="file" accept="application/pdf,.pdf" required><em id="bfPdfN">Elegir archivo…</em></label></div>
+    <details class="f key" id="bfKeyBox"><summary>Clave de publicación (solo administrador)</summary><input id="bfKey" type="password" autocomplete="off" placeholder="Pega aquí la clave de publicación"><small>Se guarda solo en este dispositivo. <a href="#" id="bfForget">Olvidar clave</a></small></details>
+    <p class="modal-msg" id="bidMsg" aria-live="polite"></p>
+    <div class="modal-a"><button type="button" class="btn-sec" data-close>Cancelar</button><button type="submit" class="btn-pri" id="bidSend">Publicar</button></div>
+  </form>
+</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
@@ -773,6 +803,49 @@ gal.querySelectorAll('.ba').forEach(function(f){f.addEventListener('click',funct
   if(window.BIDS){render(window.BIDS);return;}
   if(!/^http/.test(location.protocol))return;
   fetch('assets/presupuestos/index.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():[];}).then(render).catch(function(){});
+})();
+/* ===== Subir presupuesto: publica el PDF y actualiza index.json en el repositorio de la web (GitHub Pages) con la clave de publicación del administrador ===== */
+(function(){var REPO='danielopezblaz-prog/Doctorgarciatapia128',BR='main',DIR='assets/presupuestos';
+  var modal=document.getElementById('bidModal'),form=document.getElementById('bidForm'),msg=document.getElementById('bidMsg'),send=document.getElementById('bidSend'),list=document.getElementById('bidList'),box=document.getElementById('bids');
+  var fEmp=document.getElementById('bfEmp'),fDoc=document.getElementById('bfDoc'),fFec=document.getElementById('bfFec'),fPdf=document.getElementById('bfPdf'),fPdfN=document.getElementById('bfPdfN'),fKey=document.getElementById('bfKey'),keyBox=document.getElementById('bfKeyBox');
+  if(!modal)return;
+  function getKey(){try{return localStorage.getItem('gt128pub')||'';}catch(e){return '';}}
+  function setMsg(t,cls){msg.textContent=t||'';msg.className='modal-msg'+(cls?' '+cls:'');}
+  function open(){modal.hidden=false;setMsg('');var d=new Date();fFec.value=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');fKey.value=getKey();keyBox.open=!getKey();setTimeout(function(){fEmp.focus();},50);}
+  function close(){modal.hidden=true;}
+  document.getElementById('bidAdd').addEventListener('click',open);
+  modal.querySelectorAll('[data-close]').forEach(function(el){el.addEventListener('click',close);});
+  addEventListener('keydown',function(e){if(e.key==='Escape'&&!modal.hidden)close();});
+  fPdf.addEventListener('change',function(){fPdfN.textContent=fPdf.files[0]?fPdf.files[0].name:'Elegir archivo…';});
+  document.getElementById('bfForget').addEventListener('click',function(e){e.preventDefault();try{localStorage.removeItem('gt128pub');}catch(x){}fKey.value='';keyBox.open=true;setMsg('Clave olvidada en este dispositivo.');});
+  function slug(t){return t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40)||'presupuesto';}
+  function fecha(v){if(!v)return '';var p=v.split('-');return p.length===3?(p[2]+'/'+p[1]+'/'+p[0]):v;}
+  function b64(file){return new Promise(function(res,rej){var r=new FileReader();r.onload=function(){res(String(r.result).split(',')[1]);};r.onerror=rej;r.readAsDataURL(file);});}
+  function pages(file){return new Promise(function(res){var r=new FileReader();r.onload=function(){try{var t=String(r.result);var m=t.match(/\/Type\s*\/Page[^s]/g);res(m?m.length:0);}catch(e){res(0);}};r.onerror=function(){res(0);};r.readAsBinaryString(file.slice(0,Math.min(file.size,6e6)));});}
+  function gh(method,path,key,body){return fetch('https://api.github.com/repos/'+REPO+'/contents/'+path,{method:method,headers:{'Authorization':'Bearer '+key,'Accept':'application/vnd.github+json','Content-Type':'application/json','X-GitHub-Api-Version':'2022-11-28'},body:body?JSON.stringify(body):undefined}).then(function(r){return r.json().catch(function(){return {};}).then(function(j){if(!r.ok){var e=new Error(j&&j.message||('HTTP '+r.status));e.status=r.status;throw e;}return j;});});}
+  function b64utf8(str){return btoa(unescape(encodeURIComponent(str)));}
+  function utf8b64(b){return decodeURIComponent(escape(atob(b.replace(/\n/g,''))));}
+  form.addEventListener('submit',function(e){e.preventDefault();
+    var emp=fEmp.value.trim(),doc=fDoc.value.trim(),file=fPdf.files[0],key=fKey.value.trim();
+    if(!emp){setMsg('Indica el nombre de la contrata.','err');fEmp.focus();return;}
+    if(!file){setMsg('Elige el PDF del presupuesto.','err');return;}
+    if(!/pdf$/i.test(file.name)&&file.type!=='application/pdf'){setMsg('El archivo tiene que ser un PDF.','err');return;}
+    if(file.size>40e6){setMsg('El PDF supera los 40 MB.','err');return;}
+    if(!key){setMsg('Hace falta la clave de publicación (solo administrador).','err');keyBox.open=true;fKey.focus();return;}
+    send.disabled=true;setMsg('Subiendo el PDF…');
+    var name=slug(emp)+'-'+Date.now().toString(36)+'.pdf',entry={empresa:emp,doc:doc,fecha:fecha(fFec.value),paginas:0,archivo:name};
+    Promise.all([b64(file),pages(file)]).then(function(r){entry.paginas=r[1]||undefined;
+      return gh('PUT',DIR+'/'+name,key,{message:'Presupuesto: '+emp,content:r[0],branch:BR});
+    }).then(function(){setMsg('Actualizando la lista…');return gh('GET',DIR+'/index.json?ref='+BR,key).catch(function(err){if(err.status===404)return null;throw err;});
+    }).then(function(cur){var items=[];var sha;if(cur&&cur.content){sha=cur.sha;try{items=JSON.parse(utf8b64(cur.content));}catch(e){items=[];}}if(!Array.isArray(items))items=[];items.push(entry);
+      var body={message:'Presupuestos: añade '+emp,content:b64utf8(JSON.stringify(items,null,1)+'\n'),branch:BR};if(sha)body.sha=sha;return gh('PUT',DIR+'/index.json',key,body).then(function(){return items;});
+    }).then(function(items){try{localStorage.setItem('gt128pub',key);}catch(x){}
+      // la tarjeta aparece ya para quien sube; para el resto, en cuanto la web se vuelva a publicar (1-2 min)
+      var ev=new CustomEvent('bids:add',{detail:entry});document.dispatchEvent(ev);
+      setMsg('Publicado. Será visible para todo el mundo en uno o dos minutos.','ok');send.disabled=false;form.reset();fPdfN.textContent='Elegir archivo…';fKey.value=key;setTimeout(close,1800);
+    }).catch(function(err){send.disabled=false;var t=(err&&err.status===401)?'Clave de publicación no válida.':(err&&err.status===403)?'La clave no tiene permiso para publicar en esta web.':('No se ha podido publicar: '+(err&&err.message||err));setMsg(t,'err');if(err&&(err.status===401||err.status===403)){keyBox.open=true;}});
+  });
+  document.addEventListener('bids:add',function(e){var it=e.detail;if(!list||!box)return;var a=document.createElement('a');a.className='dl pending';a.href='#';a.addEventListener('click',function(ev){ev.preventDefault();});a.innerHTML='<span class="dl-ic" aria-hidden="true"><i>PDF</i></span><span class="dl-tx"><b></b><small></small></span><span class="dl-bt">Publicando…</span>';a.querySelector('b').textContent=it.empresa;a.querySelector('small').textContent=[it.doc,it.fecha,it.paginas?(it.paginas+' páginas'):''].filter(Boolean).join(' · ');list.appendChild(a);box.setAttribute('data-n',String(list.children.length));});
 })();
 
 </script>

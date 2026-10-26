@@ -1,7 +1,11 @@
 Cómo añadir el presupuesto de una contrata
-1) Copia el PDF en esta carpeta (assets/presupuestos/), p. ej. empresa-x.pdf (sin espacios ni acentos).
-2) Añade una entrada en index.json:
+
+Opción A (desde la propia web): botón «Subir PDF» en el apartado «Presupuestos de diferentes contratas».
+  Pide el nombre de la contrata, el documento, la fecha y el PDF. La primera vez pide la clave de publicación
+  (un token de GitHub con permiso de escritura en «Contents» solo para este repositorio); se guarda en el dispositivo.
+  El PDF y la lista (index.json) se publican en esta carpeta y la web se actualiza sola en 1-2 minutos.
+
+Opción B (a mano): copia el PDF en esta carpeta y añade una entrada en index.json:
 [
   {"empresa": "Empresa X, S.L.", "doc": "Presupuesto fachada + cubierta + instalaciones", "fecha": "26/10/2026", "paginas": 12, "archivo": "empresa-x.pdf"}
 ]
-3) Guarda y sube (commit a main): la web se actualiza sola en un par de minutos.
