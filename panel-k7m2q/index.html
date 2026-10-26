@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Panel de accesos</title>
+<meta name="description" content="Panel privado de accesos a la presentación 3D de Doctor García Tapia 128: visitas por QR y por enlace, dispositivos, horas y recorrido.">
+<style>
+:root{color-scheme:dark;--bg:#0f1317;--panel:#161b20;--panel2:#1c2228;--line:rgba(255,255,255,.12);--fg:#f2efe9;--muted:#aab0b8;--accent:#c8201f;--warm:#ffb15a;--ok:#6fd48a;
+  --s-qr:#d95926;--s-web:#3987e5;--display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;--body:"Barlow","Segoe UI",Arial,sans-serif}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--bg:#f4f3ef;--panel:#ffffff;--panel2:#f1efe9;--line:rgba(0,0,0,.12);--fg:#15191d;--muted:#5d646c;--s-qr:#eb6834;--s-web:#2a78d6;color-scheme:light}}
+:root[data-theme="dark"]{--bg:#0f1317;--panel:#161b20;--panel2:#1c2228;--line:rgba(255,255,255,.12);--fg:#f2efe9;--muted:#aab0b8;--s-qr:#d95926;--s-web:#3987e5;color-scheme:dark}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 var(--body)}
+a{color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:18px 16px 60px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:16px}
+h1{font-family:var(--display);font-size:clamp(28px,4vw,40px);font-weight:700;letter-spacing:.2px;line-height:1;margin:0}
+h1 small{display:block;font-family:var(--body);font-size:13px;font-weight:400;color:var(--muted);letter-spacing:.3px;margin-top:6px}
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{font-family:var(--display);font-size:14px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;border-radius:6px;padding:9px 13px;cursor:pointer;border:1px solid var(--line);background:transparent;color:var(--fg)}
+.btn.pri{background:var(--accent);border-color:transparent;color:#fff}.btn[disabled]{opacity:.5;cursor:default}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}.seg button{background:transparent;border:0;color:var(--muted);padding:8px 11px;font:600 13px var(--display);letter-spacing:.6px;text-transform:uppercase;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--panel2);color:var(--fg)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.setup{display:grid;gap:10px;margin-bottom:16px}.setup[hidden]{display:none}.setup .f{display:grid;gap:4px;font-size:12.5px;color:var(--muted)}
+.setup input{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:6px;color:var(--fg);padding:9px 11px;font:14px var(--body)}
+.setup .row{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}.setup .row.one{grid-template-columns:1fr auto}@media (max-width:720px){.setup .row,.setup .row.one{grid-template-columns:1fr}}
+.setup .alt summary{cursor:pointer;font-size:12.5px;color:var(--muted)}.setup .alt .row{margin-top:8px}
+.msg{font-size:13px;color:var(--warm);min-height:1.2em;margin:0}.msg.err{color:#ff8a7a}.msg.ok{color:var(--ok)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:0 0 14px}
+.tile{background:var(--panel);border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:8px;padding:10px 12px;min-width:0}
+.tile b{display:block;font-family:var(--display);font-size:30px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}.tile span{display:block;font-size:12px;color:var(--muted);margin-top:4px;line-height:1.3}
+.tile.qr{border-top-color:var(--s-qr)}.tile.web{border-top-color:var(--s-web)}
+.grid2{display:grid;grid-template-columns:1.2fr 1fr;gap:12px;margin-bottom:14px}@media (max-width:860px){.grid2{grid-template-columns:1fr}}
+.card h2{font-family:var(--display);font-size:20px;margin:0 0 8px;font-weight:700;letter-spacing:.2px}
+.legend{display:flex;gap:14px;font-size:12.5px;color:var(--muted);margin-bottom:6px}.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.chart{width:100%;height:auto;display:block}.chart text{font:11px var(--body);fill:var(--muted)}.chart .lbl{fill:var(--fg);font-weight:600}
+.tip{position:fixed;z-index:5;pointer-events:none;background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:6px 9px;font-size:12.5px;display:none;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}th,td{text-align:left;padding:8px 8px;border-bottom:1px solid var(--line);vertical-align:top}th{font-family:var(--display);font-size:12.5px;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);font-weight:600;white-space:nowrap}
+tr.s{cursor:pointer}tr.s:hover td{background:rgba(255,255,255,.04)}
+.chip{display:inline-block;font-family:var(--display);font-size:11.5px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;padding:2px 7px;border-radius:4px;border:1px solid var(--line);color:var(--fg)}
+.chip.qr{background:var(--s-qr);border-color:transparent;color:#fff}.chip.web{background:var(--s-web);border-color:transparent;color:#fff}.chip.dir{background:transparent}
+.muted{color:var(--muted)}.nowrap{white-space:nowrap}.tabwrap{overflow:auto}
+.ev{padding:6px 8px 10px 26px;color:var(--muted);font-size:12.5px}.ev li{margin:2px 0}.ev b{color:var(--fg);font-weight:600}
+.small{font-size:12px;color:var(--muted)}
+.bars{display:grid;gap:6px}.bar{display:grid;grid-template-columns:150px 1fr 40px;align-items:center;gap:8px;font-size:13px}.bar i{display:block;height:10px;border-radius:3px;background:var(--s-web)}.bar em{font-style:normal;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+.empty{padding:20px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:8px}
+.files{display:grid;gap:6px}.fi{display:grid;grid-template-columns:130px 1fr auto;gap:10px;align-items:center;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px}.fi.up{border-left:3px solid var(--s-qr)}.fi b{font-weight:600}@media (max-width:640px){.fi{grid-template-columns:1fr;gap:3px}}
+footer{margin-top:18px;font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Panel de accesos<small>Presentación 3D · Doctor García Tapia 128 · privado</small></h1>
+    <div class="tools">
+      <div class="seg" id="per"><button aria-pressed="false" data-d="1">Hoy</button><button aria-pressed="true" data-d="7">7 días</button><button aria-pressed="false" data-d="30">30 días</button><button aria-pressed="false" data-d="0">Todo</button></div>
+      <div class="seg" id="org"><button aria-pressed="true" data-o="">Todos</button><button aria-pressed="false" data-o="qr">QR</button><button aria-pressed="false" data-o="web">Enlace</button></div>
+      <button class="btn" id="btnSetup" type="button">Ajustes</button>
+      <button class="btn pri" id="btnRefresh" type="button">Actualizar</button>
+    </div>
+  </header>
+
+  <section class="card setup" id="setup" hidden>
+    <div class="row one">
+      <label class="f"><span>Enlace de la hoja de Google con los accesos (se lee con tu conexión de Google Sheets)</span><input id="inSheet" type="url" placeholder="https://docs.google.com/spreadsheets/d/…/edit"></label>
+      <button class="btn pri" id="btnSave" type="button">Guardar</button>
+    </div>
+    <details class="alt" id="altBox"><summary>Lectura directa (solo para el archivo del panel fuera de Claude)</summary>
+      <div class="row">
+        <label class="f"><span>URL del registro (Apps Script, termina en /exec)</span><input id="inUrl" type="url" placeholder="https://script.google.com/macros/s/…/exec"></label>
+        <label class="f"><span>Clave de lectura</span><input id="inKey" type="password" placeholder="GT128-…" autocomplete="off"></label>
+        <button class="btn" id="btnSave2" type="button">Guardar</button>
+      </div>
+    </details>
+    <p class="msg" id="msg"></p>
+    <p class="small" id="modeTxt">Los datos se guardan en tu hoja de Google y se leen aquí con tu propia conexión. Este panel no está enlazado desde la web: nadie que entre en la presentación sabe que existe.</p>
+  </section>
+
+  <div class="tiles" id="tiles"></div>
+
+  <div class="grid2">
+    <section class="card"><h2>Visitas por día</h2><div class="legend"><span><i style="background:var(--s-qr)"></i>Desde el QR</span><span><i style="background:var(--s-web)"></i>Desde el enlace</span></div><svg class="chart" id="chart" viewBox="0 0 640 220" role="img" aria-label="Visitas por día, QR frente a enlace"></svg></section>
+    <section class="card"><h2>Dispositivos</h2><div class="bars" id="devs"></div></section>
+  </div>
+  <section class="card" style="margin-bottom:14px"><h2>Archivos: descargas y subidas</h2><p class="small" style="margin:-4px 0 10px">Los presupuestos que suben las contratas se guardan en la propia web y los ven todos los visitantes.</p><div class="files" id="files"></div></section>
+
+  <section class="card">
+    <h2>Visitas <span class="small" id="nVis"></span></h2>
+    <div class="tabwrap"><table id="tbl"><thead><tr><th>Fecha y hora</th><th>Origen</th><th>Dispositivo</th><th>Pantalla</th><th>Idioma</th><th>Duración</th><th>Recorrido</th><th>Acciones</th><th>Visitante</th></tr></thead><tbody id="rows"></tbody></table></div>
+    <div class="empty" id="empty" hidden>Sin visitas en este periodo.</div>
+  </section>
+  <footer id="foot"></footer>
+</div>
+<div class="tip" id="tip"></div>
+
+<script>
+(function(){
+var LS={get:function(k){try{return localStorage.getItem(k)||'';}catch(e){return '';}},set:function(k,v){try{localStorage.setItem(k,v);}catch(e){}}};
+var SHEET_DEFAULT='https://docs.google.com/spreadsheets/d/1tf3Pxo_c8rfrLXIuv42AysZ5OAKIY1vwH9XQXFzDoG4/edit';
+var cfg={url:LS.get('gt128panel_url')||'https://script.google.com/macros/s/AKfycby596dEapCmYcAhAJLLTRK-hNpb1OIGwd3JF0VXMVIC79iozTYBbGF6oJaFfZNjr2Wz/exec',key:LS.get('gt128panel_key'),sheet:LS.get('gt128panel_sheet')||SHEET_DEFAULT};
+var MCP=null,MCPready=(window.claude&&window.claude.use)?window.claude.use('mcp').then(function(m){MCP=m||null;return MCP;}).catch(function(){MCP=null;return null;}):Promise.resolve(null);
+function sheetId(u){var m=String(u||'').match(/\/d\/([a-zA-Z0-9_-]{20,})/);return m?m[1]:(/^[a-zA-Z0-9_-]{20,}$/.test(String(u||'').trim())?String(u).trim():'');}
+/* filas de la hoja (cabecera + datos) → objetos con los mismos nombres que usa el panel */
+var COLS=['srv','t','ev','src','vid','sid','ua','model','platform','screen','dpr','lang','touch','orient','tz','ref','path','extra'];
+function fromValues(vals){if(!Array.isArray(vals))return [];var out=[];for(var i=1;i<vals.length;i++){var r=vals[i];if(!r||!r.length||!r[2])continue;var o={};for(var k=0;k<COLS.length;k++)o[COLS[k]]=r[k]==null?'':r[k];out.push(o);}return out;}
+function findValues(p){if(!p)return null;if(typeof p==='string'){try{return findValues(JSON.parse(p));}catch(e){return null;}}if(Array.isArray(p))return (p.length&&Array.isArray(p[0]))?p:null;if(typeof p==='object'){if(Array.isArray(p.values))return p.values;for(var k in p){var v=findValues(p[k]);if(v)return v;}}return null;}
+function loadSheet(){var id=sheetId(cfg.sheet);if(!MCP||!id)return Promise.reject({code:'no_mcp'});
+  var range='visitas!A:R';var tries=[{spreadsheetId:id,range:range},{spreadsheet_id:id,range:range},{spreadsheetId:id,ranges:[range]}];
+  function attempt(i){if(i>=tries.length)return Promise.reject({code:'bad_request',message:'El conector no ha aceptado la consulta'});return MCP.callTool('Google Sheets','get_values',tries[i],{cache:false}).then(function(res){var vals=findValues(res&&res.payload!=null?res.payload:res);if(!vals)throw {code:'tool_error',message:'Respuesta sin datos'};return fromValues(vals);}).catch(function(e){if(e&&(e.code==='bad_request'||e.code==='tool_error')&&i<tries.length-1)return attempt(i+1);throw e;});}
+  return attempt(0);}
+var per=7,org='',ROWS=[],timer=0;
+var $=function(id){return document.getElementById(id);};
+var tz='Europe/Madrid';
+function fmtDT(d){try{return new Intl.DateTimeFormat('es-ES',{timeZone:tz,day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}).format(d).replace(',','');}catch(e){return d.toLocaleString('es-ES');}}
+function fmtDay(d){try{return new Intl.DateTimeFormat('es-ES',{timeZone:tz,day:'2-digit',month:'2-digit'}).format(d);}catch(e){return d.toLocaleDateString('es-ES');}}
+function dayKey(d){try{var p=new Intl.DateTimeFormat('en-CA',{timeZone:tz,year:'numeric',month:'2-digit',day:'2-digit'}).format(d);return p;}catch(e){return d.toISOString().slice(0,10);}}
+function dur(s){if(s==null||isNaN(s))return '—';s=Math.round(s);if(s<60)return s+' s';var m=Math.floor(s/60);return m+' min '+(s%60)+' s';}
+function esc(t){return String(t==null?'':t);}
+/* dispositivo a partir del user agent y del modelo (Chrome/Android lo informa) */
+function device(ua,model,platform){ua=ua||'';var os='',dev='',br='';
+  if(/iPhone/.test(ua)){dev='iPhone';os='iOS '+((ua.match(/OS (\d+)[_\.](\d+)/)||[])[1]||'');}
+  else if(/iPad/.test(ua)||(/Macintosh/.test(ua)&&/Mobile|Touch/.test(ua))){dev='iPad';os='iPadOS';}
+  else if(/Android/.test(ua)){os='Android '+((ua.match(/Android (\d+(\.\d+)?)/)||[])[1]||'');var m=model||((ua.match(/;\s*([^;)]+?)\s+Build\//)||[])[1]||'');if(!m){var mm=ua.match(/Android [^;]+;\s*([^;)]+)\)/);if(mm&&!/wv|Mobile/.test(mm[1]))m=mm[1].trim();}dev=m||'Android';}
+  else if(/Windows/.test(ua)){os='Windows';dev='Ordenador';}
+  else if(/Macintosh|Mac OS X/.test(ua)){os='macOS';dev='Mac';}
+  else if(/CrOS/.test(ua)){os='ChromeOS';dev='Chromebook';}
+  else if(/Linux/.test(ua)){os='Linux';dev='Ordenador';}
+  else{dev='Desconocido';}
+  if(/Edg\//.test(ua))br='Edge';else if(/SamsungBrowser/.test(ua))br='Samsung Internet';else if(/OPR\//.test(ua))br='Opera';else if(/CriOS/.test(ua))br='Chrome';else if(/FxiOS/.test(ua))br='Firefox';else if(/Chrome\//.test(ua))br='Chrome';else if(/Firefox\//.test(ua))br='Firefox';else if(/Safari\//.test(ua))br='Safari';else br='';
+  if(/wv\)/.test(ua)||/FBAN|FBAV|Instagram|WhatsApp/i.test(ua))br=(/WhatsApp/i.test(ua)?'WhatsApp':/Instagram/i.test(ua)?'Instagram':/FBAN|FBAV/.test(ua)?'Facebook':'app')+' (navegador interno)';
+  return {dev:dev,os:os.trim(),br:br,txt:[dev,os.trim(),br].filter(Boolean).join(' · ')};}
+function srcClass(s){s=(s||'').toLowerCase();return s==='enlace'?'web':'qr';}
+function srcName(s){return srcClass(s)==='web'?'Enlace':'QR';}
+/* agrupar eventos por sesión */
+function sessions(rows){var S={};rows.forEach(function(r){var t=new Date(r.t||r.srv);if(isNaN(t))t=new Date(r.srv);var k=r.sid||('x'+r.srv);var s=S[k];if(!s){s=S[k]={sid:k,vid:r.vid,src:r.src,start:t,end:t,ua:r.ua,model:r.model,platform:r.platform,screen:r.screen,orient:r.orient,lang:r.lang,tz:r.tz,ref:r.ref,ev:[],maxStep:0,final:false,play:false,present:false,dl:[],up:[],secs:null,nuevo:null};}
+    if(t<s.start)s.start=t;if(t>s.end)s.end=t;var ex={};try{ex=r.extra?JSON.parse(r.extra):{};}catch(e){}
+    s.ev.push({t:t,ev:r.ev,ex:ex});
+    if(r.ev==='visita'&&ex&&ex.nuevo!=null)s.nuevo=!!ex.nuevo;
+    if(r.ev==='paso'&&ex.n>s.maxStep)s.maxStep=ex.n;if(r.ev==='final')s.final=true;if(r.ev==='play')s.play=true;if(r.ev==='presentar')s.present=true;
+    if(r.ev==='descarga')s.dl.push(ex.doc||'documento');if(r.ev==='subida')s.up.push(ex.empresa||'');
+    if(r.ev==='salida'){if(ex.segundos!=null)s.secs=(s.secs||0)+Number(ex.segundos);if(ex.pasoMax==='final')s.final=true;else if(Number(ex.pasoMax)>s.maxStep)s.maxStep=Number(ex.pasoMax);}
+    if(!s.src&&r.src)s.src=r.src;});
+  var out=Object.keys(S).map(function(k){var s=S[k];if(s.secs==null)s.secs=Math.max(0,Math.round((s.end-s.start)/1000));s.ev.sort(function(a,b){return a.t-b.t;});return s;});
+  out.sort(function(a,b){return b.start-a.start;});return out;}
+function inPeriod(s){if(!per)return true;var from=new Date();from.setHours(0,0,0,0);from.setDate(from.getDate()-(per-1));return s.start>=from;}
+function inOrg(s){if(!org)return true;var c=srcClass(s.src);return org==='qr'?c==='qr':c!=='qr';}
+function render(){var all=sessions(ROWS),list=all.filter(inPeriod).filter(inOrg);
+  var vis=list.length,uniq={},qr=0,web=0,fin=0,dlm=0,dlp=0,ups=0,secs=0,n=0,today=0,tk=dayKey(new Date());
+  list.forEach(function(s){uniq[s.vid||s.sid]=1;if(srcClass(s.src)==='qr')qr++;else web++;if(s.final)fin++;s.dl.forEach(function(d){if(/memoria/i.test(d))dlm++;else dlp++;});ups+=s.up.length;if(s.secs){secs+=s.secs;n++;}if(dayKey(s.start)===tk)today++;});
+  var tiles=[['Visitas',vis,'sesiones en el periodo',''],['Personas',Object.keys(uniq).length,'visitantes distintos',''],['Desde el QR',qr,'escanearon el código','qr'],['Desde el enlace',web,'abrieron el enlace compartido','web'],['Hoy',today,'visitas de hoy',''],['Tiempo medio',n?dur(secs/n):'—','por visita',''],['Llegan al final',vis?Math.round(100*fin/vis)+' %':'—','ven el resumen',''],['Memoria ciega',dlm,'descargas del PDF',''],['Presupuestos',dlp,'descargas de ofertas',''],['Subidas',ups,'presupuestos subidos por contratas','']];
+  $('tiles').innerHTML=tiles.map(function(t){return '<div class="tile '+t[3]+'"><b>'+t[1]+'</b><span>'+t[0]+' · '+t[2]+'</span></div>';}).join('');
+  chart(list);devices(list);files(list);table(list);
+  $('nVis').textContent=vis?('· '+vis):'';$('empty').hidden=vis>0;
+  $('foot').textContent='Actualizado '+fmtDT(new Date())+' · '+ROWS.length+' eventos en total · hora de Madrid.';}
+function chart(list){var svg=$('chart');var days={};var D=per||30;var from=new Date();from.setHours(0,0,0,0);
+  if(per){from.setDate(from.getDate()-(per-1));}else{var mn=list.length?list.reduce(function(a,s){return s.start<a?s.start:a;},new Date()):new Date();from=new Date(mn);from.setHours(0,0,0,0);D=Math.max(7,Math.min(60,Math.round((Date.now()-from)/864e5)+1));}
+  var keys=[];for(var i=0;i<D;i++){var d=new Date(from);d.setDate(from.getDate()+i);var k=dayKey(d);keys.push(k);days[k]={qr:0,web:0,d:d};}
+  list.forEach(function(s){var k=dayKey(s.start);if(days[k]){if(srcClass(s.src)==='qr')days[k].qr++;else days[k].web++;}});
+  var W=640,H=220,L=30,R=8,T=14,B=28,w=W-L-R,h=H-T-B,max=4;keys.forEach(function(k){max=Math.max(max,days[k].qr,days[k].web);});
+  var gw=w/keys.length,bw=Math.max(3,Math.min(18,gw*0.36)),out='';
+  for(var g=0;g<=4;g++){var y=T+h-h*g/4;out+='<line x1="'+L+'" y1="'+y+'" x2="'+(W-R)+'" y2="'+y+'" stroke="currentColor" stroke-opacity=".12"/><text x="'+(L-6)+'" y="'+(y+4)+'" text-anchor="end">'+Math.round(max*g/4)+'</text>';}
+  keys.forEach(function(k,i){var x=L+gw*i+gw/2;var dd=days[k];var hq=h*dd.qr/max,hw=h*dd.web/max;
+    out+='<g class="bar" data-k="'+k+'"><rect x="'+(x-bw-1)+'" y="'+(T+h-hq)+'" width="'+bw+'" height="'+hq+'" rx="3" fill="var(--s-qr)"/><rect x="'+(x+1)+'" y="'+(T+h-hw)+'" width="'+bw+'" height="'+hw+'" rx="3" fill="var(--s-web)"/><rect x="'+(x-gw/2)+'" y="'+T+'" width="'+gw+'" height="'+h+'" fill="transparent" data-tip="'+fmtDay(dd.d)+': QR '+dd.qr+' · enlace '+dd.web+'"/>';
+    if(dd.qr)out+='<text class="lbl" x="'+(x-bw/2-1)+'" y="'+(T+h-hq-3)+'" text-anchor="middle">'+dd.qr+'</text>';if(dd.web)out+='<text class="lbl" x="'+(x+bw/2+1)+'" y="'+(T+h-hw-3)+'" text-anchor="middle">'+dd.web+'</text>';
+    var step=Math.ceil(keys.length/8);if(i%step===0||(i===keys.length-1&&(keys.length-1)%step>=step/2))out+='<text x="'+x+'" y="'+(H-8)+'" text-anchor="middle">'+fmtDay(dd.d)+'</text>';out+='</g>';});
+  svg.innerHTML=out;}
+function files(list){var box=$('files');if(!box)return;var ev=[];list.forEach(function(s){var d=device(s.ua,s.model,s.platform);s.ev.forEach(function(e){if(e.ev==='descarga')ev.push({t:e.t,txt:'Descarga · '+(e.ex.doc||'documento'),who:d.dev,src:s.src});if(e.ev==='subida')ev.push({t:e.t,txt:'Subida de presupuesto · '+(e.ex.empresa||''),who:d.dev,src:s.src,up:true});});});
+  ev.sort(function(a,b){return b.t-a.t;});
+  box.innerHTML=ev.length?ev.slice(0,40).map(function(e){return '<div class="fi'+(e.up?' up':'')+'"><span class="nowrap">'+fmtDT(e.t)+'</span><b>'+esc(e.txt)+'</b><span class="muted">'+esc(e.who)+' · <span class="chip '+srcClass(e.src)+'">'+srcName(e.src)+'</span></span></div>';}).join(''):'<div class="empty">Todavía nadie ha descargado ni subido archivos en este periodo.</div>';}
+function devices(list){var c={};list.forEach(function(s){var d=device(s.ua,s.model,s.platform);var k=d.dev+(d.os?' · '+d.os:'');c[k]=(c[k]||0)+1;});
+  var arr=Object.keys(c).map(function(k){return [k,c[k]];}).sort(function(a,b){return b[1]-a[1];}).slice(0,8);var max=arr.length?arr[0][1]:1;
+  $('devs').innerHTML=arr.length?arr.map(function(a){return '<div class="bar"><span class="nowrap" title="'+esc(a[0])+'">'+esc(a[0])+'</span><i style="width:'+Math.round(100*a[1]/max)+'%"></i><em>'+a[1]+'</em></div>';}).join(''):'<div class="empty">Sin datos</div>';}
+function table(list){var tb=$('rows');tb.innerHTML='';list.forEach(function(s,i){var d=device(s.ua,s.model,s.platform);var tr=document.createElement('tr');tr.className='s';
+    var rec=s.final?'Completo':(s.maxStep?('Paso '+s.maxStep+'/14'):'Portada');var acts=[];if(s.play)acts.push('Play');if(s.present)acts.push('Presentar');if(s.dl.length)acts.push('Descarga ×'+s.dl.length);if(s.up.length)acts.push('Subida');
+    tr.innerHTML='<td class="nowrap">'+fmtDT(s.start)+'</td><td><span class="chip '+srcClass(s.src)+'">'+srcName(s.src)+'</span></td><td>'+esc(d.txt)+'</td><td class="nowrap">'+esc(s.screen||'')+(s.orient?' <span class="muted">'+(s.orient==='vertical'?'↕':'↔')+'</span>':'')+'</td><td class="nowrap">'+esc(s.lang||'')+(s.tz&&s.tz!==tz?' <span class="muted">'+esc(s.tz)+'</span>':'')+'</td><td class="nowrap">'+dur(s.secs)+'</td><td class="nowrap">'+rec+'</td><td>'+(acts.join(', ')||'<span class="muted">—</span>')+'</td><td class="nowrap"><span class="muted">'+esc((s.vid||s.sid).slice(0,6))+'</span> '+(s.nuevo===false?'<span class="chip dir">Repite</span>':(s.nuevo?'<span class="chip dir">Nuevo</span>':''))+'</td>';
+    var det=document.createElement('tr');det.hidden=true;var td=document.createElement('td');td.colSpan=9;td.className='ev';
+    td.innerHTML='<ul style="margin:0;padding-left:16px">'+s.ev.map(function(e){var x=e.ex||{};var t={visita:'Entra en la presentación',play:'Pulsa Ver la rehabilitación (vídeo)',presentar:'Modo Presentar',paso:'Llega al paso '+(x.n||''),final:'Llega al resumen final',descarga:'Descarga: '+(x.doc||''),subida:'Sube presupuesto: '+(x.empresa||''),salida:'Sale tras '+dur(x.segundos)}[e.ev]||e.ev;return '<li><b>'+fmtDT(e.t).split(' ')[1]+'</b> '+esc(t)+'</li>';}).join('')+'</ul><div style="margin-top:6px">'+esc(s.ua||'')+(s.ref?'<br>Referencia: '+esc(s.ref):'')+'</div>';
+    det.appendChild(td);tr.addEventListener('click',function(){det.hidden=!det.hidden;});tb.appendChild(tr);tb.appendChild(det);});}
+function errTxt(e){var c=e&&e.code;var m={needs_reauth:'Vuelve a conectar Google Sheets en claude.ai (Ajustes → Conectores).',server_not_connected:'Añade el conector Google Sheets en claude.ai (Ajustes → Conectores) y vuelve a abrir el panel.',not_in_manifest:'Este panel no tiene permiso para usar Google Sheets: acéptalo cuando lo pida o revísalo en los permisos del artefacto.',approval_required:'Hace falta tu permiso para leer la hoja: pulsa Actualizar y acepta.',blocked_by_policy:'Tu organización bloquea el conector de Google Sheets.',server_unavailable:'Google Sheets no responde ahora mismo; prueba en un momento.',tool_error:'Google Sheets no ha podido leer la hoja ('+(e&&e.message||'')+'). Comprueba el enlace de la hoja.'};return m[c]||('No se han podido leer los datos: '+(e&&e.message||e));}
+function load(){$('btnRefresh').disabled=true;setMsg('Cargando…','');
+  MCPready.then(function(){
+    var useSheet=!!(MCP&&sheetId(cfg.sheet));
+    if(!useSheet&&!(cfg.url&&cfg.key)){$('setup').hidden=false;$('altBox').open=!MCP;setMsg(MCP?'Pega el enlace de tu hoja de Google de accesos.':'Introduce la clave de lectura (una sola vez en este dispositivo).','');$('btnRefresh').disabled=false;return;}
+    var p=useSheet?loadSheet():fetch(cfg.url+(cfg.url.indexOf('?')>0?'&':'?')+'key='+encodeURIComponent(cfg.key),{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){if(!j||!j.ok){throw {code:'http',message:(j&&j.error==='clave')?'Clave de lectura incorrecta':'Respuesta no válida'};}return j.rows||[];});
+    return p.then(function(rows){ROWS=rows||[];render();setMsg('','');$('setup').hidden=true;$('modeTxt').textContent=useSheet?'Leído de tu hoja de Google con tu conexión de Google Sheets.':'Leído directamente del registro.';})
+     .catch(function(e){$('setup').hidden=false;setMsg(errTxt(e),'err');}).then(function(){$('btnRefresh').disabled=false;});
+  });}
+function setMsg(t,c){var m=$('msg');m.textContent=t;m.className='msg'+(c?' '+c:'');}
+$('btnSetup').addEventListener('click',function(){$('setup').hidden=!$('setup').hidden;$('inUrl').value=cfg.url;$('inKey').value=cfg.key;$('inSheet').value=cfg.sheet;});
+function saveAll(){cfg.sheet=$('inSheet').value.trim();cfg.url=$('inUrl').value.trim();cfg.key=$('inKey').value.trim();LS.set('gt128panel_sheet',cfg.sheet);LS.set('gt128panel_url',cfg.url);LS.set('gt128panel_key',cfg.key);load();}
+$('btnSave').addEventListener('click',saveAll);$('btnSave2').addEventListener('click',saveAll);
+$('btnRefresh').addEventListener('click',load);
+$('per').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;per=Number(b.dataset.d);Array.prototype.forEach.call($('per').children,function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});render();});
+$('org').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;org=b.dataset.o;Array.prototype.forEach.call($('org').children,function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});render();});
+var tip=$('tip');document.addEventListener('mousemove',function(e){var t=e.target&&e.target.getAttribute&&e.target.getAttribute('data-tip');if(t){tip.textContent=t;tip.style.display='block';tip.style.left=(e.clientX+12)+'px';tip.style.top=(e.clientY+12)+'px';}else tip.style.display='none';});
+$('inUrl').value=cfg.url;$('inKey').value=cfg.key;$('inSheet').value=cfg.sheet;
+load();timer=setInterval(function(){if(((MCP&&sheetId(cfg.sheet))||(cfg.url&&cfg.key))&&!document.hidden)load();},90000);
+})();
+</script>
+</body>
+</html>
