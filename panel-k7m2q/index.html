@@ -99,7 +99,9 @@ footer{margin-top:18px;font-size:12px;color:var(--muted)}
 (function(){
 var LS={get:function(k){try{return localStorage.getItem(k)||'';}catch(e){return '';}},set:function(k,v){try{localStorage.setItem(k,v);}catch(e){}}};
 var SHEET_DEFAULT='https://docs.google.com/spreadsheets/d/1tf3Pxo_c8rfrLXIuv42AysZ5OAKIY1vwH9XQXFzDoG4/edit';
-var cfg={url:LS.get('gt128panel_url')||'https://script.google.com/macros/s/AKfycby596dEapCmYcAhAJLLTRK-hNpb1OIGwd3JF0VXMVIC79iozTYBbGF6oJaFfZNjr2Wz/exec',key:LS.get('gt128panel_key'),sheet:LS.get('gt128panel_sheet')||SHEET_DEFAULT};
+var URL_DEFAULT='https://script.google.com/macros/s/AKfycby596dEapCmYcAhAJLLTRK-hNpb1OIGwd3JF0VXMVIC79iozTYBbGF6oJaFfZNjr2Wz/exec';
+var cfg={url:URL_DEFAULT,key:LS.get('gt128panel_key'),sheet:LS.get('gt128panel_sheet')||SHEET_DEFAULT};
+try{localStorage.removeItem('gt128panel_url');}catch(e){} /* direcciones antiguas guardadas en pruebas: fuera */
 /* la clave puede venir en el propio enlace guardado (#k=…): se guarda en el dispositivo y se quita de la barra */
 try{var hk=new URLSearchParams((location.hash||'').replace(/^#/,'')).get('k');if(hk){cfg.key=hk;LS.set('gt128panel_key',hk);history.replaceState(null,'',location.pathname+location.search);}}catch(e){}
 var MCP=null,MCPready=(window.claude&&window.claude.use)?window.claude.use('mcp').then(function(m){MCP=m||null;return MCP;}).catch(function(){MCP=null;return null;}):Promise.resolve(null);
@@ -185,13 +187,13 @@ function load(){$('btnRefresh').disabled=true;setMsg('Cargando…','');
   MCPready.then(function(){
     var useSheet=!!(MCP&&sheetId(cfg.sheet));
     if(!useSheet&&!(cfg.url&&cfg.key)){$('setup').hidden=false;$('altBox').open=!MCP;setMsg(MCP?'Pega el enlace de tu hoja de Google de accesos.':'Introduce la clave de lectura (una sola vez en este dispositivo).','');$('btnRefresh').disabled=false;return;}
-    var p=useSheet?loadSheet():fetch(cfg.url+(cfg.url.indexOf('?')>0?'&':'?')+'key='+encodeURIComponent(cfg.key),{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){if(!j||!j.ok){throw {code:'http',message:(j&&j.error==='clave')?'Clave de lectura incorrecta':'Respuesta no válida'};}return j.rows||[];});
+    var p=useSheet?loadSheet():fetch(cfg.url+(cfg.url.indexOf('?')>0?'&':'?')+'key='+encodeURIComponent(cfg.key),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){var j=null;try{j=JSON.parse(t);}catch(e){throw {code:'http',message:'el registro ha devuelto una página en vez de datos (revisa que la implementación del script esté en «Cualquier usuario»)'};}if(!j||!j.ok){throw {code:'http',message:(j&&j.error==='clave')?'Clave de lectura incorrecta':'Respuesta no válida'};}return j.rows||[];});
     return p.then(function(rows){ROWS=rows||[];render();setMsg('','');$('setup').hidden=true;$('modeTxt').textContent=useSheet?'Leído de tu hoja de Google con tu conexión de Google Sheets.':'Leído directamente del registro.';})
      .catch(function(e){$('setup').hidden=false;setMsg(errTxt(e),'err');}).then(function(){$('btnRefresh').disabled=false;});
   });}
 function setMsg(t,c){var m=$('msg');m.textContent=t;m.className='msg'+(c?' '+c:'');}
 $('btnSetup').addEventListener('click',function(){$('setup').hidden=!$('setup').hidden;$('inUrl').value=cfg.url;$('inKey').value=cfg.key;$('inSheet').value=cfg.sheet;});
-function saveAll(){cfg.sheet=$('inSheet').value.trim();cfg.url=$('inUrl').value.trim();cfg.key=$('inKey').value.trim();LS.set('gt128panel_sheet',cfg.sheet);LS.set('gt128panel_url',cfg.url);LS.set('gt128panel_key',cfg.key);load();}
+function saveAll(){cfg.sheet=$('inSheet').value.trim();var u=$('inUrl').value.trim();cfg.url=/^https:\/\/script\.google\.com\/.+\/exec$/.test(u)?u:URL_DEFAULT;cfg.key=$('inKey').value.trim();LS.set('gt128panel_sheet',cfg.sheet);LS.set('gt128panel_key',cfg.key);load();}
 $('btnSave').addEventListener('click',saveAll);$('btnSave2').addEventListener('click',saveAll);
 $('btnRefresh').addEventListener('click',load);
 $('per').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;per=Number(b.dataset.d);Array.prototype.forEach.call($('per').children,function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});render();});
