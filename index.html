@@ -627,11 +627,11 @@ function applyStep(i,t){
   vis(G.prev,i<=2||i>=13);
   var sc = 1 + (i===2? tt*0.12 : 0); G.prev.scale.setScalar(sc); G.prev.position.y = (Y0+H/2)*(1-sc);
   acMesh.material.opacity = i===2? 1-tt : (i<2?1:0); acMesh.material.emissive.setHex(i===2?0xff6b4a:0x000000); acMesh.material.emissiveIntensity=i===2?(0.6*(1-tt)):0;
-  toldMesh.material.opacity = i===2? 1-tt : (i<2?1:(i>=13?1:0)); toldMesh.material.emissive.setHex(i===2?0xff6b4a:0x000000);toldMesh.material.emissiveIntensity=i===2?0.5*(1-tt):0;
+  toldMesh.material.opacity = i===2? 1-tt : (i<2?1:0); toldMesh.material.emissive.setHex(i===2?0xff6b4a:0x000000);toldMesh.material.emissiveIntensity=i===2?0.5*(1-tt):0;
   MAT.gas.opacity = i===2? 1-tt*0.6 : (i<2?1:0.4); MAT.gas.emissive.setHex(i===2?0xff8a3a:0x000000);MAT.gas.emissiveIntensity=i===2?0.6:0;
   MAT.cable.opacity = i===2? 1-tt : (i<2?1:0);
   acMesh.position.set(0,0,0); acMesh.visible = i<=2;
-  toldMesh.visible = i<=2 || i>=13;
+  toldMesh.visible = i<=2; // los toldos no se muestran en el edificio terminado
   // celosía antigua
   vis(G.old,i<=3);
   G.old.children.forEach(function(m){m.material.opacity = i===3? 1-tt : 1; m.position.y = Y0+H/2 - (i===3? tt*6:0);});
